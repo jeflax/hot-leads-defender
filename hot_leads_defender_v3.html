@@ -1,0 +1,1739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Hot Leads Defender - RevOps Playable Ad</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --red-hot: #FF3366;
+            --orange-warm: #FF8C42;
+            --gray-cold: #95A3B3;
+            --bg-dark: #0A0E27;
+            --bg-secondary: #151B3B;
+            --neon-cyan: #00F5FF;
+            --neon-green: #39FF14;
+            --warning: #FFD700;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--bg-dark);
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+            color: white;
+        }
+
+        /* Animated grid background */
+        body::before {
+            content: '';
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 245, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 245, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            animation: gridMove 20s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(40px); }
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 450px;
+            height: 100vh;
+            margin: 0 auto;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .game-header {
+            padding: 15px 20px;
+            background: linear-gradient(180deg, var(--bg-secondary), transparent);
+            border-bottom: 2px solid var(--neon-cyan);
+            position: relative;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .brand-42 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--neon-green);
+            text-shadow: 0 0 15px rgba(57, 255, 20, 0.6);
+            letter-spacing: 1px;
+            line-height: 1;
+        }
+
+        .brand-divider {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 24px;
+            font-weight: 300;
+        }
+
+        .brand-agency {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--neon-green);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.9;
+        }
+
+        .header-titles {
+            flex: 1;
+            text-align: center;
+        }
+
+        .game-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 24px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+            margin-bottom: 5px;
+            text-shadow: 0 0 20px rgba(0, 245, 255, 0.5);
+        }
+
+        .game-subtitle {
+            text-align: center;
+            font-size: 11px;
+            color: var(--orange-warm);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: flex;
+            gap: 10px;
+            padding: 10px 20px;
+            background: rgba(21, 27, 59, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 245, 255, 0.2);
+        }
+
+        .stat {
+            flex: 1;
+            text-align: center;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--neon-cyan);
+            border-radius: 5px;
+        }
+
+        .stat-label {
+            font-size: 10px;
+            color: var(--neon-cyan);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 3px;
+        }
+
+        .stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 20px;
+            font-weight: 900;
+            color: white;
+        }
+
+        .revenue-health-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 3px;
+        }
+
+        .revenue-health-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--red-hot), var(--orange-warm), var(--neon-green));
+            transition: width 0.3s ease;
+        }
+
+        .revenue-health-fill.warning-blink {
+            animation: healthBlink 0.5s ease-in-out 3;
+        }
+
+        @keyframes healthBlink {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        /* Game Canvas */
+        .game-canvas {
+            flex: 1;
+            position: relative;
+            overflow: visible;
+            background: linear-gradient(180deg, var(--bg-dark), var(--bg-secondary));
+        }
+
+        /* Simple grid - small squares in light green */
+        .game-canvas::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(rgba(57, 255, 20, 0.08) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(57, 255, 20, 0.08) 1px, transparent 1px);
+            background-size: 30px 30px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Falling scan line */
+        .game-canvas::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(57, 255, 20, 0.6),
+                transparent
+            );
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.8);
+            animation: scanLineFall 5s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        @keyframes scanLineFall {
+            0%, 100% {
+                top: 0;
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 0.8;
+            }
+            100% {
+                top: 100%;
+                opacity: 0;
+            }
+        }
+
+        .lead {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            cursor: pointer;
+            transition: transform 0.1s;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+            animation: float 2s ease-in-out infinite;
+            z-index: 60;
+        }
+
+        /* Glowing trail effect for falling leads */
+        .lead::after {
+            content: '';
+            position: absolute;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 3px;
+            height: 100px;
+            opacity: 0.6;
+            pointer-events: none;
+            filter: blur(3px);
+        }
+
+        .lead.hot::after {
+            background: linear-gradient(to bottom, transparent, var(--red-hot));
+            box-shadow: 0 0 10px var(--red-hot);
+        }
+
+        .lead.warm::after {
+            background: linear-gradient(to bottom, transparent, var(--orange-warm));
+            box-shadow: 0 0 8px var(--orange-warm);
+        }
+
+        .lead.cold::after {
+            background: linear-gradient(to bottom, transparent, var(--neon-cyan));
+            box-shadow: 0 0 6px var(--neon-cyan);
+        }
+
+        .lead.whale::after {
+            background: linear-gradient(to bottom, transparent, var(--warning));
+            box-shadow: 0 0 15px var(--warning);
+            width: 4px;
+            height: 120px;
+            top: -120px;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .lead.hot {
+            background: radial-gradient(circle, var(--red-hot), #CC0033);
+            border: 3px solid var(--red-hot);
+            box-shadow: 0 0 30px var(--red-hot);
+            animation: pulse-hot 1s ease-in-out infinite;
+        }
+
+        .lead.warm {
+            background: radial-gradient(circle, var(--orange-warm), #CC6600);
+            border: 3px solid var(--orange-warm);
+            box-shadow: 0 0 20px var(--orange-warm);
+        }
+
+        .lead.cold {
+            background: radial-gradient(circle, var(--gray-cold), #556677);
+            border: 3px solid var(--gray-cold);
+            box-shadow: 0 0 10px var(--gray-cold);
+        }
+
+        .lead.whale {
+            width: 70px;
+            height: 70px;
+            font-size: 36px;
+            background: radial-gradient(circle, #FFD700, #FFA500);
+            border: 4px solid var(--warning);
+            box-shadow: 0 0 40px var(--warning);
+            animation: pulse-whale 0.8s ease-in-out infinite;
+        }
+
+        @keyframes pulse-hot {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 30px var(--red-hot);
+            }
+            50% {
+                transform: scale(1.1);
+                box-shadow: 0 0 50px var(--red-hot);
+            }
+        }
+
+        @keyframes pulse-whale {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 40px var(--warning);
+            }
+            50% {
+                transform: scale(1.15);
+                box-shadow: 0 0 60px var(--warning);
+            }
+        }
+
+        .lead-value {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 2px 5px;
+            border-radius: 10px;
+            border: 1px solid white;
+        }
+
+        /* SDRs Container */
+        .reps-container {
+            height: 140px;
+            background: linear-gradient(0deg, var(--bg-secondary), transparent);
+            border-top: 2px solid var(--neon-cyan);
+            display: flex;
+            padding: 12px;
+            gap: 12px;
+            position: relative;
+            z-index: 50;
+        }
+
+        .rep {
+            flex: 1;
+            background: rgba(21, 27, 59, 0.8);
+            border: 2px solid var(--neon-cyan);
+            border-radius: 10px;
+            padding: 10px;
+            cursor: grab;
+            user-select: none;
+            position: relative;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .rep:active {
+            cursor: grabbing;
+            transform: scale(1.05);
+            border-color: var(--neon-green);
+            box-shadow: 0 0 20px var(--neon-green);
+        }
+
+        .rep.catching {
+            animation: catchFlash 0.4s ease-out;
+        }
+
+        @keyframes catchFlash {
+            0% {
+                background: rgba(21, 27, 59, 0.8);
+                border-color: var(--neon-cyan);
+                transform: scale(1);
+            }
+            50% {
+                background: rgba(57, 255, 20, 0.3);
+                border-color: var(--neon-green);
+                box-shadow: 0 0 30px var(--neon-green);
+                transform: scale(1.05);
+            }
+            100% {
+                background: rgba(21, 27, 59, 0.8);
+                border-color: var(--neon-cyan);
+                transform: scale(1);
+            }
+        }
+
+        .rep.quitting {
+            opacity: 0.3;
+            pointer-events: none;
+            border-color: var(--gray-cold);
+            background: rgba(21, 27, 59, 0.3);
+        }
+
+        .rep.quitting .rep-icon {
+            filter: grayscale(100%);
+        }
+
+        .rep.inactive {
+            opacity: 0.2;
+            pointer-events: none;
+            border: 2px dashed var(--gray-cold);
+            background: rgba(21, 27, 59, 0.2);
+        }
+
+        .rep.inactive .rep-icon {
+            filter: grayscale(100%) brightness(0.5);
+        }
+
+        .rep.inactive .rep-name {
+            color: var(--gray-cold);
+        }
+
+        .gap-warning {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 40px;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .rep-icon {
+            font-size: 30px;
+            text-align: center;
+            margin-bottom: 5px;
+            position: relative;
+        }
+
+        .rep-name {
+            font-size: 14px;
+            text-align: center;
+            color: var(--neon-cyan);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .quit-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 51, 102, 0.95);
+            color: white;
+            padding: 40px 60px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-align: center;
+            box-shadow: 
+                0 20px 60px rgba(255, 51, 102, 0.8),
+                inset 0 0 50px rgba(0, 0, 0, 0.3);
+            animation: quitMessagePop 2.5s ease-out forwards;
+            z-index: 300;
+            border: 4px solid white;
+            min-width: 280px;
+        }
+
+        .quit-crying-face {
+            font-size: 120px;
+            display: block;
+            margin-bottom: 20px;
+            animation: cry 0.5s ease-in-out infinite;
+        }
+
+        @keyframes cry {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .quit-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 28px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .quit-subtext {
+            font-size: 24px;
+            opacity: 0.95;
+            letter-spacing: 2px;
+            font-weight: bold;
+            color: #FFD700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        @keyframes quitMessagePop {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.3) rotate(-10deg);
+            }
+            15% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.15) rotate(5deg);
+            }
+            25% {
+                transform: translate(-50%, -50%) scale(1) rotate(0deg);
+            }
+            85% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.5) rotate(10deg);
+            }
+        }
+
+        .satisfaction-bar {
+            height: 6px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 3px;
+        }
+
+        .satisfaction-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--red-hot), var(--orange-warm), var(--neon-green));
+            transition: width 0.5s ease;
+        }
+
+        .load-indicator {
+            font-size: 9px;
+            text-align: center;
+            color: var(--gray-cold);
+        }
+
+        .rep.happy .rep-icon::after {
+            content: '😊';
+            position: absolute;
+            font-size: 12px;
+            margin-left: -15px;
+            margin-top: -5px;
+        }
+
+        .rep.sad .rep-icon::after {
+            content: '😢';
+            position: absolute;
+            font-size: 12px;
+            margin-left: -15px;
+            margin-top: -5px;
+        }
+
+        .rep.burned .rep-icon::after {
+            content: '🔥';
+            position: absolute;
+            font-size: 12px;
+            margin-left: -15px;
+            margin-top: -5px;
+        }
+
+        /* Particle effects */
+        .catch-effect {
+            position: absolute;
+            pointer-events: none;
+            font-size: 24px;
+            animation: catchPop 0.6s ease-out forwards;
+            font-weight: bold;
+        }
+
+        @keyframes catchPop {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-50px) scale(1.5);
+            }
+        }
+
+        /* Results Overlay */
+        .results-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 14, 39, 0.98);
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .results-overlay.active {
+            display: flex;
+        }
+
+        .results-content {
+            max-width: 400px;
+            padding: 30px;
+            text-align: center;
+            animation: slideUp 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .results-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 48px;
+            font-weight: 900;
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+            text-shadow: 0 0 30px rgba(0, 245, 255, 0.5);
+        }
+
+        .results-subtitle {
+            font-size: 16px;
+            color: var(--orange-warm);
+            margin-bottom: 30px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .metric-card {
+            background: rgba(21, 27, 59, 0.6);
+            border: 2px solid var(--neon-cyan);
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .metric-label {
+            font-size: 11px;
+            color: var(--neon-cyan);
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .metric-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 28px;
+            font-weight: 900;
+            color: white;
+            line-height: 1.1;
+            word-break: break-all;
+        }
+
+        .metric-unit {
+            font-size: 12px;
+            color: var(--gray-cold);
+            margin-top: 2px;
+        }
+
+        .insight-box {
+            background: rgba(255, 51, 102, 0.1);
+            border: 2px solid var(--red-hot);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .insight-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            color: var(--red-hot);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .insight-text {
+            font-size: 14px;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 18px 40px;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-green));
+            color: var(--bg-dark);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 20px;
+            font-weight: 900;
+            text-decoration: none;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 245, 255, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .cta-button:hover::before {
+            width: 400px;
+            height: 400px;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 245, 255, 0.6);
+        }
+
+        /* Tutorial overlay */
+        .tutorial {
+            position: fixed;
+            bottom: 160px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-green));
+            color: var(--bg-dark);
+            padding: 20px 30px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 15px;
+            z-index: 200;
+            animation: bounce 2s ease-in-out infinite;
+            box-shadow: 0 5px 30px rgba(0, 245, 255, 0.6);
+            max-width: 340px;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        .tutorial-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .tutorial-text {
+            font-size: 13px;
+        }
+
+        /* Animated hand/finger for tutorial demo */
+        .demo-hand {
+            position: fixed;
+            font-size: 50px;
+            z-index: 300;
+            pointer-events: none;
+            filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-10px); }
+        }
+
+        .tutorial.hidden {
+            display: none;
+        }
+
+        /* Revenue at Risk Warning */
+        .warning-overlay {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 51, 102, 0.95);
+            color: white;
+            padding: 30px 50px;
+            border-radius: 20px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 32px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border: 4px solid white;
+            box-shadow: 0 0 50px rgba(255, 51, 102, 0.8);
+            z-index: 150;
+            pointer-events: none;
+            opacity: 0;
+            animation: warningPulse 2s ease-in-out infinite;
+        }
+
+        .warning-overlay.active {
+            opacity: 1;
+        }
+
+        @keyframes warningPulse {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(1);
+                box-shadow: 0 0 50px rgba(255, 51, 102, 0.8);
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.1);
+                box-shadow: 0 0 80px rgba(255, 51, 102, 1);
+            }
+        }
+
+        .warning-icon {
+            font-size: 48px;
+            display: block;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <!-- Header -->
+        <div class="game-header">
+            <div class="brand-logo">
+                <div class="brand-42">42</div>
+                <div class="brand-divider">|</div>
+                <div class="brand-agency">Agency</div>
+            </div>
+            <div class="header-titles">
+                <div class="game-title">Hot Leads Defender</div>
+                <div class="game-subtitle">RevOps Routing Challenge</div>
+            </div>
+            <div style="width: 50px;"></div>
+        </div>
+
+        <!-- Stats Bar -->
+        <div class="stats-bar">
+            <div class="stat">
+                <div class="stat-label">Score</div>
+                <div class="stat-value" id="score">0</div>
+            </div>
+            <div class="stat">
+                <div class="stat-label">Caught</div>
+                <div class="stat-value" id="caught">0</div>
+            </div>
+            <div class="stat">
+                <div class="stat-label">Rev Health</div>
+                <div class="revenue-health-bar">
+                    <div class="revenue-health-fill" id="healthBar" style="width: 100%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Canvas -->
+        <div class="game-canvas" id="gameCanvas">
+            <!-- Leads will spawn here -->
+        </div>
+
+        <!-- SDRs Container -->
+        <div class="reps-container" id="repsContainer">
+            <!-- SDRs will be created here -->
+        </div>
+    </div>
+
+    <!-- Warning Overlay -->
+    <div class="warning-overlay" id="warningOverlay">
+        <span class="warning-icon">⚠️</span>
+        Revenue at Risk!
+    </div>
+
+    <!-- Tutorial -->
+    <div class="tutorial" id="tutorial">
+        <div class="tutorial-title">🎯 How to Play</div>
+        <div class="tutorial-text">
+            Drag SDRs left/right to catch falling leads!<br>
+            Balance workload to keep team happy.<br>
+            Hot leads 🔥 = More points!
+        </div>
+    </div>
+
+    <!-- Results Overlay -->
+    <div class="results-overlay" id="resultsOverlay">
+        <div class="results-content">
+            <div class="results-title">Game Over!</div>
+            <div class="results-subtitle">This is what unoptimized routing looks like</div>
+            
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-label">Avg Response</div>
+                    <div class="metric-value" id="avgResponse">--</div>
+                    <div class="metric-unit">seconds</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">ICP Hit Rate</div>
+                    <div class="metric-value" id="icpRate">--</div>
+                    <div class="metric-unit">%</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Team Balance</div>
+                    <div class="metric-value" id="teamBalance">--</div>
+                    <div class="metric-unit">%</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Revenue Leak</div>
+                    <div class="metric-value" id="revenueLeak">--</div>
+                </div>
+            </div>
+
+            <div class="insight-box">
+                <div class="insight-title">⚠️ Revenue at Risk</div>
+                <div class="insight-text" id="insightText">
+                    Without smart lead routing, you're leaving money on the table.
+                </div>
+            </div>
+
+            <button class="cta-button" onclick="handleCTA()">
+                See How 42 Fixes This
+            </button>
+        </div>
+    </div>
+
+    <script>
+        class HotLeadsDefender {
+            constructor() {
+                this.canvas = document.getElementById('gameCanvas');
+                this.repsContainer = document.getElementById('repsContainer');
+                this.score = 0;
+                this.caught = 0;
+                this.missed = 0;
+                this.health = 100;
+                this.gameTime = 0;
+                this.isGameOver = false;
+                this.leads = [];
+                this.reps = [];
+                this.stats = {
+                    hotCaught: 0,
+                    warmCaught: 0,
+                    coldCaught: 0,
+                    totalCaught: 0,
+                    totalMissed: 0,
+                    missedValue: 0,
+                    repLoads: []
+                };
+
+                this.init();
+            }
+
+            init() {
+                this.createReps();
+                this.startGameDelayed();
+                this.setupDragAndDrop();
+            }
+
+            createReps() {
+                const repNames = ['Alex', 'Sam', 'Jordan', 'Casey'];
+                const repIcons = ['👨‍💼', '👩‍💼', '🧑‍💼', '👨‍💻'];
+
+                for (let i = 0; i < 4; i++) {
+                    const rep = {
+                        id: i,
+                        name: repNames[i],
+                        icon: repIcons[i],
+                        satisfaction: 50,
+                        load: 0,
+                        catches: 0,
+                        active: true,
+                        element: this.createRepElement(i, repNames[i], repIcons[i])
+                    };
+                    this.reps.push(rep);
+                    this.stats.repLoads.push(0);
+                }
+            }
+
+            createRepElement(id, name, icon) {
+                const repEl = document.createElement('div');
+                repEl.className = 'rep';
+                repEl.dataset.repId = id;
+                repEl.innerHTML = `
+                    <div class="rep-icon">${icon}</div>
+                    <div class="rep-name">${name}</div>
+                    <div class="satisfaction-bar">
+                        <div class="satisfaction-fill" style="width: 50%"></div>
+                    </div>
+                    <div class="load-indicator">Load: <span>0</span></div>
+                `;
+                this.repsContainer.appendChild(repEl);
+                return repEl;
+            }
+
+            setupDragAndDrop() {
+                let draggedRep = null;
+                let offsetX, offsetY;
+
+                this.repsContainer.addEventListener('mousedown', this.startDrag.bind(this));
+                this.repsContainer.addEventListener('touchstart', this.startDrag.bind(this));
+                
+                document.addEventListener('mousemove', this.drag.bind(this));
+                document.addEventListener('touchmove', this.drag.bind(this));
+                
+                document.addEventListener('mouseup', this.endDrag.bind(this));
+                document.addEventListener('touchend', this.endDrag.bind(this));
+
+                this.dragState = { active: false, rep: null, offsetX: 0, offsetY: 0 };
+            }
+
+            startDrag(e) {
+                const target = e.target.closest('.rep');
+                if (!target) return;
+
+                e.preventDefault();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                const rect = target.getBoundingClientRect();
+
+                this.dragState = {
+                    active: true,
+                    rep: target,
+                    offsetX: clientX - rect.left,
+                    offsetY: clientY - rect.top,
+                    originalIndex: Array.from(this.repsContainer.children).indexOf(target)
+                };
+            }
+
+            drag(e) {
+                if (!this.dragState.active) return;
+                e.preventDefault();
+
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const containerRect = this.repsContainer.getBoundingClientRect();
+                
+                let newLeft = clientX - containerRect.left - this.dragState.offsetX;
+                newLeft = Math.max(0, Math.min(newLeft, containerRect.width - this.dragState.rep.offsetWidth));
+
+                this.dragState.rep.style.position = 'absolute';
+                this.dragState.rep.style.left = newLeft + 'px';
+                this.dragState.rep.style.zIndex = '100';
+            }
+
+            endDrag(e) {
+                if (!this.dragState.active) return;
+                
+                const draggedEl = this.dragState.rep;
+                const reps = Array.from(this.repsContainer.children);
+                const rect = draggedEl.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+
+                // Find insertion position
+                let targetIndex = 0;
+                for (let i = 0; i < reps.length; i++) {
+                    if (reps[i] === draggedEl) continue;
+                    const r = reps[i].getBoundingClientRect();
+                    const repCenterX = r.left + r.width / 2;
+                    if (centerX > repCenterX) targetIndex++;
+                }
+
+                // Reorder in DOM
+                const currentIndex = reps.indexOf(draggedEl);
+                if (targetIndex !== currentIndex) {
+                    if (targetIndex >= reps.length) {
+                        this.repsContainer.appendChild(draggedEl);
+                    } else {
+                        this.repsContainer.insertBefore(draggedEl, reps[targetIndex]);
+                    }
+
+                    // Reorder in array
+                    const draggedRepData = this.reps[currentIndex];
+                    this.reps.splice(currentIndex, 1);
+                    this.reps.splice(targetIndex, 0, draggedRepData);
+
+                    // Update IDs
+                    this.reps.forEach((rep, idx) => {
+                        rep.id = idx;
+                        rep.element.dataset.repId = idx;
+                    });
+                }
+
+                // Reset styles
+                draggedEl.style.position = '';
+                draggedEl.style.left = '';
+                draggedEl.style.zIndex = '';
+                
+                this.dragState = { active: false, rep: null, offsetX: 0, offsetY: 0 };
+            }
+
+            startGame() {
+                this.gameLoop();
+                this.spawnLoop();
+                this.updateSatisfactionLoop();
+            }
+
+            startGameDelayed() {
+                // Start game loop and satisfaction immediately
+                this.gameLoop();
+                this.updateSatisfactionLoop();
+                
+                // Play tutorial demo (swap Alex and Jordan)
+                this.playTutorialDemo();
+                
+                // Delay lead spawning for 4 seconds (tutorial time)
+                setTimeout(() => {
+                    this.spawnLoop();
+                }, 4000);
+            }
+
+            playTutorialDemo() {
+                // Create animated hand
+                const hand = document.createElement('div');
+                hand.className = 'demo-hand';
+                hand.textContent = '👆';
+                hand.style.opacity = '0';
+                document.body.appendChild(hand);
+
+                const alex = this.reps[0].element; // Alex (first)
+                const jordan = this.reps[2].element; // Jordan (third)
+                
+                const repsRect = this.repsContainer.getBoundingClientRect();
+                const alexRect = alex.getBoundingClientRect();
+                const jordanRect = jordan.getBoundingClientRect();
+
+                // Animation sequence
+                setTimeout(() => {
+                    // 1. Hand appears over Alex
+                    hand.style.left = (alexRect.left + alexRect.width / 2 - 25) + 'px';
+                    hand.style.top = (alexRect.top + alexRect.height / 2 - 25) + 'px';
+                    hand.style.opacity = '1';
+                }, 500);
+
+                setTimeout(() => {
+                    // 2. "Grab" Alex - turn it green and lift it
+                    alex.style.borderColor = 'var(--neon-green)';
+                    alex.style.boxShadow = '0 0 30px var(--neon-green)';
+                    alex.style.transform = 'scale(1.05)';
+                    alex.style.position = 'absolute';
+                    alex.style.zIndex = '100';
+                    alex.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+                }, 1000);
+
+                setTimeout(() => {
+                    // 3. Move Alex and hand together to Jordan's position
+                    const targetLeft = jordanRect.left - repsRect.left;
+                    
+                    alex.style.left = targetLeft + 'px';
+                    
+                    hand.style.left = (jordanRect.left + jordanRect.width / 2 - 25) + 'px';
+                    hand.style.top = (jordanRect.top + jordanRect.height / 2 - 25) + 'px';
+                }, 1200);
+
+                setTimeout(() => {
+                    // 4. Swap them in DOM (reorder)
+                    const allReps = Array.from(this.repsContainer.children);
+                    const alexIndex = allReps.indexOf(alex);
+                    const jordanIndex = allReps.indexOf(jordan);
+                    
+                    if (alexIndex < jordanIndex) {
+                        this.repsContainer.insertBefore(alex, jordan.nextSibling);
+                    } else {
+                        this.repsContainer.insertBefore(alex, jordan);
+                    }
+                    
+                    // Reset Alex styles
+                    alex.style.position = '';
+                    alex.style.left = '';
+                    alex.style.transform = '';
+                    alex.style.borderColor = '';
+                    alex.style.boxShadow = '';
+                    alex.style.zIndex = '';
+                    
+                    // CRITICAL FIX: Properly swap the internal rep objects
+                    // Store references
+                    const alexRepData = this.reps[0];
+                    const jordanRepData = this.reps[2];
+                    
+                    // Swap the rep data objects (keeping element references correct)
+                    this.reps[0] = jordanRepData;
+                    this.reps[2] = alexRepData;
+                    
+                    // Update IDs to match new positions
+                    this.reps[0].id = 0;
+                    this.reps[2].id = 2;
+                    
+                    // Re-setup drag and drop with correct references
+                    this.setupDragAndDrop();
+                }, 2200);
+
+                setTimeout(() => {
+                    // 5. Hand fades out
+                    hand.style.opacity = '0';
+                }, 2500);
+
+                setTimeout(() => {
+                    // 6. Remove hand and hide tutorial
+                    hand.remove();
+                    const tutorial = document.getElementById('tutorial');
+                    if (tutorial) tutorial.classList.add('hidden');
+                }, 3500);
+            }
+
+            spawnLoop() {
+                if (this.isGameOver) return;
+
+                let isFirstLead = true;
+
+                const spawnLead = () => {
+                    if (this.isGameOver) return;
+                    
+                    const leadType = Math.random();
+                    let type, icon, value, speed;
+
+                    if (leadType < 0.05) { // 5% whale
+                        type = 'whale';
+                        icon = '🐋';
+                        value = 1000;
+                        speed = 1.8; // Faster
+                    } else if (leadType < 0.25) { // 20% hot
+                        type = 'hot';
+                        icon = '🔥';
+                        value = 100;
+                        speed = 3.5; // Much faster
+                    } else if (leadType < 0.55) { // 30% warm
+                        type = 'warm';
+                        icon = '⚡';
+                        value = 50;
+                        speed = 4.5; // Very fast
+                    } else { // 45% cold
+                        type = 'cold';
+                        icon = '❄️';
+                        value = 10;
+                        speed = 6; // Super fast
+                    }
+
+                    this.spawnLead(type, icon, value, speed, isFirstLead);
+                    isFirstLead = false;
+
+                    const nextSpawn = Math.random() * 1000 + 500;
+                    setTimeout(spawnLead, nextSpawn);
+                };
+
+                spawnLead();
+            }
+
+            spawnLead(type, icon, value, speed, isFirstLead = false) {
+                const canvasRect = this.canvas.getBoundingClientRect();
+                const containerRect = document.querySelector('.game-container').getBoundingClientRect();
+                
+                const lead = document.createElement('div');
+                lead.className = `lead ${type}`;
+                lead.innerHTML = `
+                    ${icon}
+                    <div class="lead-value">$${value}</div>
+                `;
+                
+                let x;
+                if (isFirstLead) {
+                    // First lead spawns exactly between SDR 2 and SDR 3 (middle gap at 50%)
+                    // After the demo swap, this will be a clear gap that requires user action
+                    x = (canvasRect.width * 0.50) - 25; // Dead center between middle two SDRs
+                } else {
+                    // Random position for subsequent leads
+                    x = Math.random() * (canvasRect.width - 70);
+                }
+                
+                lead.style.left = (canvasRect.left - containerRect.left + x) + 'px';
+                lead.style.top = (canvasRect.top - containerRect.top) + 'px';
+
+                // Append to game-container instead of canvas so it can go over reps
+                document.querySelector('.game-container').appendChild(lead);
+
+                const leadObj = {
+                    element: lead,
+                    type: type,
+                    value: value,
+                    speed: speed,
+                    x: x,
+                    y: 0,
+                    caught: false,
+                    checkedForCatch: false,
+                    missedAtRepLine: false,
+                    alreadyMissed: false,
+                    startTop: canvasRect.top - containerRect.top
+                };
+
+                this.leads.push(leadObj);
+            }
+
+            gameLoop() {
+                if (this.isGameOver) return;
+
+                const canvasRect = this.canvas.getBoundingClientRect();
+                const repsRect = this.repsContainer.getBoundingClientRect();
+                const containerRect = document.querySelector('.game-container').getBoundingClientRect();
+                const windowHeight = window.innerHeight;
+
+                this.leads.forEach((lead, index) => {
+                    if (lead.caught) return;
+
+                    lead.y += lead.speed;
+                    const absoluteTop = lead.startTop + lead.y;
+                    lead.element.style.top = absoluteTop + 'px';
+
+                    // Check if reached reps zone (first time only)
+                    if (absoluteTop + 50 >= repsRect.top - containerRect.top && !lead.checkedForCatch) {
+                        lead.checkedForCatch = true;
+                        this.checkCatch(lead, canvasRect, repsRect);
+                    }
+
+                    // If missed at rep line and reached actual bottom of viewport
+                    if (lead.missedAtRepLine && absoluteTop > windowHeight - containerRect.top) {
+                        this.missLead(lead, index);
+                    }
+
+                    // Safety cleanup for leads that go way off screen
+                    if (absoluteTop > windowHeight + 200) {
+                        if (lead.element.parentNode) {
+                            lead.element.remove();
+                        }
+                        const leadIndex = this.leads.indexOf(lead);
+                        if (leadIndex > -1) {
+                            this.leads.splice(leadIndex, 1);
+                        }
+                    }
+                });
+
+                this.gameTime += 16;
+                requestAnimationFrame(() => this.gameLoop());
+            }
+
+            checkCatch(lead, canvasRect, repsRect) {
+                const containerRect = document.querySelector('.game-container').getBoundingClientRect();
+                const leadAbsoluteLeft = parseFloat(lead.element.style.left);
+                const leadCenterX = leadAbsoluteLeft + 25;
+                
+                const reps = Array.from(this.repsContainer.children);
+                let caughtByAnyone = false;
+
+                reps.forEach((repEl, index) => {
+                    // Skip inactive reps
+                    const repData = this.reps.find(r => r.element === repEl);
+                    if (!repData || !repData.active) return;
+
+                    const rect = repEl.getBoundingClientRect();
+                    const relativeLeft = rect.left - containerRect.left;
+                    const relativeRight = relativeLeft + rect.width;
+
+                    if (leadCenterX >= relativeLeft && leadCenterX <= relativeRight) {
+                        this.catchLead(lead, repData.id);
+                        caughtByAnyone = true;
+                    }
+                });
+
+                // If not caught by any active rep, mark as missed at rep line
+                // but let it continue falling visually
+                if (!caughtByAnyone) {
+                    lead.missedAtRepLine = true;
+                }
+            }
+
+            catchLead(lead, repIndex) {
+                if (lead.caught) return;
+                
+                lead.caught = true;
+                this.caught++;
+                this.stats.totalCaught++;
+
+                // Calculate points based on lead type
+                let points = lead.value;
+                if (lead.type === 'hot') {
+                    points *= 2;
+                    this.stats.hotCaught++;
+                } else if (lead.type === 'warm') {
+                    this.stats.warmCaught++;
+                } else if (lead.type === 'cold') {
+                    points = Math.floor(points / 2);
+                    this.stats.coldCaught++;
+                }
+
+                this.score += points;
+                this.updateStats();
+
+                // Update rep
+                const rep = this.reps[repIndex];
+                rep.catches++;
+                rep.load += (lead.type === 'cold' ? 5 : (lead.type === 'warm' ? 10 : 15));
+                this.stats.repLoads[repIndex]++;
+
+                // Flash animation on rep card
+                if (rep.element) {
+                    rep.element.classList.add('catching');
+                    setTimeout(() => {
+                        rep.element.classList.remove('catching');
+                    }, 400);
+                }
+
+                // Show effect
+                this.showCatchEffect(lead.element, points);
+
+                // Remove lead
+                setTimeout(() => {
+                    if (lead.element.parentNode) {
+                        lead.element.remove();
+                    }
+                    this.leads = this.leads.filter(l => l !== lead);
+                }, 100);
+
+                this.updateRepDisplay(repIndex);
+            }
+
+            missLead(lead, index) {
+                if (lead.caught || lead.alreadyMissed) return;
+                
+                lead.alreadyMissed = true;
+                this.missed++;
+                this.stats.totalMissed++;
+                
+                // Track actual value of missed lead for revenue leak calculation
+                this.stats.missedValue += lead.value;
+                
+                console.log(`Missed ${lead.type} lead worth $${lead.value}. Total missed value: $${this.stats.missedValue}`);
+
+                // Reduce health based on lead value
+                const healthLoss = lead.type === 'whale' ? 30 : (lead.type === 'hot' ? 15 : (lead.type === 'warm' ? 10 : 5));
+                this.health = Math.max(0, this.health - healthLoss);
+
+                this.updateStats();
+
+                if (lead.element.parentNode) {
+                    lead.element.remove();
+                }
+                
+                // Remove from array
+                const leadIndex = this.leads.indexOf(lead);
+                if (leadIndex > -1) {
+                    this.leads.splice(leadIndex, 1);
+                }
+
+                if (this.health <= 0) {
+                    this.endGame();
+                }
+            }
+
+            showCatchEffect(element, points) {
+                const effect = document.createElement('div');
+                effect.className = 'catch-effect';
+                effect.textContent = `+${points}`;
+                effect.style.left = element.style.left;
+                effect.style.top = element.style.top;
+                effect.style.color = points >= 100 ? '#39FF14' : (points >= 50 ? '#FF8C42' : '#95A3B3');
+                this.canvas.appendChild(effect);
+
+                setTimeout(() => effect.remove(), 600);
+            }
+
+            updateSatisfactionLoop() {
+                setInterval(() => {
+                    if (this.isGameOver) return;
+
+                    this.reps.forEach((rep, index) => {
+                        if (!rep.active) return;
+
+                        // FASTER satisfaction decay for more challenge
+                        if (rep.load < 10) {
+                            // Idle SDRs lose satisfaction FAST
+                            rep.satisfaction = Math.max(0, rep.satisfaction - 2.5);
+                        } else if (rep.load > 50) {
+                            // Overworked SDRs also lose satisfaction FAST
+                            rep.satisfaction = Math.max(0, rep.satisfaction - 3);
+                        } else {
+                            // Slower recovery
+                            rep.satisfaction = Math.min(100, rep.satisfaction + 1);
+                        }
+
+                        // Decay load
+                        rep.load = Math.max(0, rep.load - 2);
+
+                        // Check if SDR quits
+                        if (rep.satisfaction <= 0 && rep.active) {
+                            this.sdrQuits(rep, index);
+                        }
+
+                        this.updateRepDisplay(index);
+                    });
+
+                    // Show warning if health is low
+                    this.updateWarning();
+                }, 1000);
+            }
+
+            sdrQuits(rep, index) {
+                rep.active = false;
+                
+                // Show LARGE dramatic quit message
+                const quitMsg = document.createElement('div');
+                quitMsg.className = 'quit-message';
+                quitMsg.innerHTML = `
+                    <div class="quit-crying-face">😭</div>
+                    <div class="quit-text">OUT OF PATIENCE</div>
+                    <div class="quit-subtext">${rep.name} has quit!</div>
+                `;
+                document.body.appendChild(quitMsg);
+
+                // Mark rep as inactive but keep the gap
+                rep.element.classList.add('quitting');
+                
+                setTimeout(() => {
+                    rep.element.classList.remove('quitting');
+                    rep.element.classList.add('inactive');
+                    rep.element.innerHTML = `
+                        <div class="gap-warning">⚠️</div>
+                        <div class="rep-name" style="color: var(--gray-cold);">VACANT</div>
+                    `;
+                }, 500);
+
+                // Remove quit message after animation
+                setTimeout(() => {
+                    if (quitMsg.parentNode) {
+                        quitMsg.remove();
+                    }
+                }, 2500);
+
+                // Check if all SDRs quit
+                const activeReps = this.reps.filter(r => r.active).length;
+                if (activeReps === 0) {
+                    setTimeout(() => {
+                        this.health = 0;
+                        this.endGame();
+                    }, 2500);
+                }
+
+                // Reduce health moderately
+                this.health = Math.max(0, this.health - 15);
+                this.updateStats();
+
+                // Start faster health decay for having a gap
+                this.startGapDecay(index);
+            }
+
+            startGapDecay(repIndex) {
+                const decayInterval = setInterval(() => {
+                    if (this.isGameOver) {
+                        clearInterval(decayInterval);
+                        return;
+                    }
+
+                    const rep = this.reps[repIndex];
+                    if (rep && !rep.active) {
+                        // Lose health slower - 5% per second for each gap
+                        this.health = Math.max(0, this.health - 0.8);
+                        this.updateStats();
+
+                        if (this.health <= 0) {
+                            clearInterval(decayInterval);
+                            this.endGame();
+                        }
+                    } else {
+                        clearInterval(decayInterval);
+                    }
+                }, 1000);
+            }
+
+            updateWarning() {
+                const warningEl = document.getElementById('warningOverlay');
+                
+                if (this.health < 40 && this.health > 0) {
+                    warningEl.classList.add('active');
+                } else {
+                    warningEl.classList.remove('active');
+                }
+            }
+
+            updateRepDisplay(repIndex) {
+                const rep = this.reps[repIndex];
+                if (!rep || !rep.active || !rep.element) return;
+
+                const satFill = rep.element.querySelector('.satisfaction-fill');
+                const loadSpan = rep.element.querySelector('.load-indicator span');
+
+                if (satFill) satFill.style.width = rep.satisfaction + '%';
+                if (loadSpan) loadSpan.textContent = rep.load;
+
+                // Update rep state
+                rep.element.classList.remove('happy', 'sad', 'burned');
+                if (rep.satisfaction < 30) {
+                    rep.element.classList.add('sad');
+                } else if (rep.satisfaction > 70) {
+                    rep.element.classList.add('happy');
+                }
+
+                if (rep.load > 60) {
+                    rep.element.classList.add('burned');
+                }
+            }
+
+            updateStats() {
+                document.getElementById('score').textContent = this.score;
+                document.getElementById('caught').textContent = this.caught;
+                
+                const healthBar = document.getElementById('healthBar');
+                const previousHealth = parseFloat(healthBar.style.width) || 100;
+                const healthDrop = previousHealth - this.health;
+                
+                healthBar.style.width = this.health + '%';
+                
+                // Blink if health dropped by 10% or more
+                if (healthDrop >= 10) {
+                    healthBar.classList.add('warning-blink');
+                    setTimeout(() => {
+                        healthBar.classList.remove('warning-blink');
+                    }, 1500);
+                }
+            }
+
+            endGame() {
+                this.isGameOver = true;
+                
+                // Calculate metrics
+                const avgResponse = Math.floor(Math.random() * 120 + 60); // Simulated
+                const icpRate = Math.floor((this.stats.hotCaught + this.stats.warmCaught) / Math.max(1, this.stats.totalCaught) * 100);
+                
+                const loads = this.stats.repLoads;
+                const avgLoad = loads.reduce((a, b) => a + b, 0) / loads.length;
+                const variance = loads.reduce((sum, load) => sum + Math.pow(load - avgLoad, 2), 0) / loads.length;
+                const teamBalance = Math.max(0, 100 - Math.floor(variance * 5));
+                
+                // Show full dollar amount (not in K)
+                const revenueLeak = this.stats.missedValue || 0;
+
+                document.getElementById('avgResponse').textContent = avgResponse;
+                document.getElementById('icpRate').textContent = icpRate;
+                document.getElementById('teamBalance').textContent = teamBalance;
+                document.getElementById('revenueLeak').textContent = '$' + revenueLeak.toLocaleString();
+
+                let insight = "Without smart lead routing, you're leaving money on the table.";
+                if (icpRate < 50) {
+                    insight = "You caught too many low-value leads while missing hot prospects. Smart routing prioritizes ICP.";
+                } else if (teamBalance < 60) {
+                    insight = "Your team load is unbalanced. Some reps burned out while others sat idle. Fair routing keeps everyone productive.";
+                } else if (this.stats.totalMissed > 10) {
+                    insight = `You missed ${this.stats.totalMissed} leads. That's $${revenueLeak.toLocaleString()} in potential revenue. SLA automation prevents this.`;
+                }
+
+                document.getElementById('insightText').textContent = insight;
+                document.getElementById('resultsOverlay').classList.add('active');
+
+                // Track event
+                if (window.parent && window.parent.postMessage) {
+                    window.parent.postMessage({
+                        event: 'GAME_COMPLETED',
+                        score: this.score,
+                        metrics: { avgResponse, icpRate, teamBalance, revenueLeak }
+                    }, '*');
+                }
+            }
+        }
+
+        // Initialize game
+        let game;
+        window.addEventListener('DOMContentLoaded', () => {
+            game = new HotLeadsDefender();
+        });
+
+        function handleCTA() {
+            // Track CTA click
+            if (window.parent && window.parent.postMessage) {
+                window.parent.postMessage({ event: 'CTA_CLICKED' }, '*');
+            }
+
+            // Redirect to 42 Agency contact page
+            window.open('https://www.42agency.com/contact-us', '_blank');
+        }
+
+        // Prevent bounce scrolling
+        document.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+        }, { passive: false });
+    </script>
+</body>
+</html>
